@@ -2,32 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+/* ===== Reset básico para evitar inconsistencias entre navegadores ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
+/* ===== Configuración global del body ===== */
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  @apply bg-gray-100 text-gray-900 font-sans leading-relaxed;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* ===== Tipografía global ===== */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold text-gray-800;
+}
+
+p {
+  @apply text-gray-700;
+}
+
+/* ===== Enlaces ===== */
+a {
+  @apply text-yellow-600 hover:text-yellow-700 transition-colors duration-200;
+  text-decoration: none;
+}
+
+/* ===== Botones estándar ===== */
+.btn-primary {
+  @apply bg-yellow-600 text-white font-medium px-6 py-3 rounded-lg hover:bg-yellow-700 transition;
+}
+
+.btn-secondary {
+  @apply bg-gray-700 text-white font-medium px-6 py-3 rounded-lg hover:bg-gray-800 transition;
+}
+
+/* ===== Contenedor principal ===== */
+.container {
+  @apply max-w-7xl mx-auto px-4;
 }
