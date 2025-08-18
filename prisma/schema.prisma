@@ -11,10 +11,12 @@ datasource db {
 }
 
 model Producto {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  categoria String
-  precio    Float
-  imagen    String?
-  creadoEn  DateTime @default(now())
+  id               Int      @id @default(autoincrement())
+  nombre           String
+  categoria        String
+  precio           Float
+  imagen           String?
+  descripcion      String?
+  especificaciones String?   // Guardamos JSON en formato texto
+  creadoEn         DateTime @default(now())
 }

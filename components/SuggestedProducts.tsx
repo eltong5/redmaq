@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface Producto {
@@ -11,27 +10,11 @@ interface Producto {
   categoria: string;
 }
 
-export default function SuggestedProducts() {
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [loading, setLoading] = useState(true);
+interface SuggestedProductsProps {
+  productos?: Producto[];
+}
 
-  useEffect(() => {
-    fetch("/api/productos?sugeridos=true")
-      .then((res) => res.json())
-      .then((data) => {
-        setProductos(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error al cargar productos sugeridos:", err);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return <p>Cargando productos sugeridos...</p>;
-  }
-
+export default function SuggestedProducts({ productos = [] }: SuggestedProductsProps) {
   if (productos.length === 0) {
     return <p>No hay productos sugeridos disponibles.</p>;
   }

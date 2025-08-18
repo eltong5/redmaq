@@ -45,7 +45,7 @@ export default function Home() {
           {productos.map((producto) => (
             <Link
               key={producto.id}
-              href={`/producto/${producto.id}`}
+              href={`/productos/${producto.id}`}
               className="block"
             >
               <div className="border rounded-lg overflow-hidden shadow hover:shadow-lg transition cursor-pointer">
