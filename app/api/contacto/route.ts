@@ -1,6 +1,10 @@
+// app/api/contacto/route.ts
+export const runtime = "nodejs"; // ← importante para Vercel
+
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+// Configura el transporter de manera segura
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT),
@@ -11,6 +15,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Función para limpiar inputs y evitar HTML/JS malicioso
 function sanitize(input: string) {
   return input.replace(/<[^>]*>?/gm, "").trim();
 }
@@ -25,24 +30,30 @@ export async function POST(req: Request) {
       { method: "POST" }
     );
     const recaptchaData = await recaptchaRes.json();
+
     if (!recaptchaData.success) {
       return NextResponse.json({ error: "reCAPTCHA inválido" }, { status: 400 });
     }
 
-    if (!nombre || !email || !mensaje) {
+    // Validar campos obligatorios
+    if (!nombre?.trim() || !email?.trim() || !mensaje?.trim()) {
       return NextResponse.json({ error: "Campos obligatorios faltantes" }, { status: 400 });
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       return NextResponse.json({ error: "Email inválido" }, { status: 400 });
     }
 
+    // Sanitizar inputs
     const cleanNombre = sanitize(nombre);
     const cleanEmpresa = sanitize(empresa || "");
     const cleanEmail = sanitize(email);
     const cleanTelefono = sanitize(telefono || "");
     const cleanMensaje = sanitize(mensaje);
 
+    // Enviar correo
     await transporter.sendMail({
       from: `"${cleanNombre}" <${cleanEmail}>`,
       to: process.env.CONTACT_EMAIL,
@@ -56,7 +67,7 @@ Mensaje: ${cleanMensaje}`,
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error(err);
+    console.error("Error en POST /api/contacto:", err);
     return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }
 }
