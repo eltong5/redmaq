@@ -2,33 +2,23 @@
 import { useState } from "react";
 
 export default function ContactoPage() {
-  const [form, setForm] = useState({
-    nombre: "",
-    empresa: "",
-    email: "",
-    telefono: "",
-    mensaje: "",
-  });
-  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [form, setForm] = useState({ nombre: "", empresa: "", email: "", telefono: "", mensaje: "" });
+  const [status, setStatus] = useState<"idle" | "sending" | "success">("idle");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
 
-    try {
-      // Simular envío
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      console.log("Datos enviados:", form); // solo para debug
+    // Simulación de envío
+    setTimeout(() => {
+      console.log("Datos enviados (simulación):", form);
       setStatus("success");
       setForm({ nombre: "", empresa: "", email: "", telefono: "", mensaje: "" });
-    } catch {
-      setStatus("error");
-    }
+    }, 1000);
   };
 
   return (
@@ -36,9 +26,8 @@ export default function ContactoPage() {
       <h1 className="text-3xl font-bold mb-6">Contáctanos</h1>
 
       {status === "success" && (
-        <p className="text-green-600 mb-4">¡Mensaje enviado correctamente!</p>
+        <p className="text-green-600 mb-4">¡Mensaje enviado correctamente (simulación)!</p>
       )}
-      {status === "error" && <p className="text-red-600 mb-4">Error al enviar el mensaje</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow">
         <input
