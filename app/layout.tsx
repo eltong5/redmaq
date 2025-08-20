@@ -1,6 +1,8 @@
-import "./globals.css"; // Importa los estilos globales
+import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CartSidebar from "@/components/CartSidebar";
+import { CartProvider } from "@/app/context/CartContext";
 
 export const metadata = {
   title: "Redmaq Colombia",
@@ -10,10 +12,13 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body>
-        <Header />
-        <main className="max-w-7xl mx-auto p-6">{children}</main>
-        <Footer />
+      <body className="bg-gray-50 text-gray-900 antialiased">
+        <CartProvider>
+          <Header />
+          <main className="max-w-7xl mx-auto p-6">{children}</main>
+          <CartSidebar />
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

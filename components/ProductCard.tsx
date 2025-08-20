@@ -1,4 +1,3 @@
-// app/components/ProductCard.tsx
 "use client";
 
 import Link from "next/link";
@@ -11,10 +10,16 @@ interface ProductCardProps {
   imagen: string;
 }
 
-export default function ProductCard({ id, nombre, categoria, precio, imagen }: ProductCardProps) {
+export default function ProductCard({
+  id,
+  nombre,
+  categoria,
+  precio,
+  imagen,
+}: ProductCardProps) {
   return (
     <Link
-      href={`/producto/${id}`}
+      href={`/productos/${id}`}
       className="block bg-white rounded-lg shadow hover:shadow-lg transition p-4"
     >
       <img

@@ -1,6 +1,7 @@
+// app/api/productos/route.ts
 import { NextResponse } from "next/server";
 
-// Productos ficticios (los mismos que tienes en `page.tsx`)
+// Productos ficticios (luego puedes moverlos a una DB)
 const productos = [
   {
     id: 1,
@@ -42,25 +43,45 @@ const productos = [
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
+
   const id = searchParams.get("id");
+  const categoria = searchParams.get("categoria");
+  const min = searchParams.get("min");
+  const max = searchParams.get("max");
 
-  if (!id) {
-    return NextResponse.json({ productos });
-  }
+  // ✅ Caso 1: pedir un producto por ID
+  if (id) {
+    const producto = productos.find((p) => p.id === Number(id));
 
-  const producto = productos.find((p) => p.id === Number(id));
+    if (!producto) {
+      return NextResponse.json(
+        { error: "Producto no encontrado" },
+        { status: 404 }
+      );
+    }
 
-  if (!producto) {
-    return NextResponse.json(
-      { error: "Producto no encontrado" },
-      { status: 404 }
+    // Sugeridos: misma categoría, distinto id
+    const sugeridos = productos.filter(
+      (p) => p.categoria === producto.categoria && p.id !== producto.id
     );
+
+    return NextResponse.json({ producto, sugeridos });
   }
 
-  // Sugeridos = mismos categoría pero distinto id
-  const sugeridos = productos.filter(
-    (p) => p.categoria === producto.categoria && p.id !== producto.id
-  );
+  // ✅ Caso 2: traer todos (con filtros opcionales)
+  let filtrados = [...productos];
 
-  return NextResponse.json({ producto, sugeridos });
+  if (categoria) {
+    filtrados = filtrados.filter((p) => p.categoria === categoria);
+  }
+
+  if (min) {
+    filtrados = filtrados.filter((p) => p.precio >= Number(min));
+  }
+
+  if (max) {
+    filtrados = filtrados.filter((p) => p.precio <= Number(max));
+  }
+
+  return NextResponse.json({ productos: filtrados });
 }

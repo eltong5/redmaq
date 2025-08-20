@@ -14,7 +14,9 @@ interface SuggestedProductsProps {
   productos?: Producto[];
 }
 
-export default function SuggestedProducts({ productos = [] }: SuggestedProductsProps) {
+export default function SuggestedProducts({
+  productos = [],
+}: SuggestedProductsProps) {
   if (productos.length === 0) {
     return <p>No hay productos sugeridos disponibles.</p>;
   }
@@ -24,7 +26,7 @@ export default function SuggestedProducts({ productos = [] }: SuggestedProductsP
       {productos.map((producto) => (
         <Link
           key={producto.id}
-          href={`/producto/${producto.id}`}
+          href={`/productos/${producto.id}`}
           className="border rounded-lg overflow-hidden shadow hover:shadow-lg transition block"
         >
           <img

@@ -1,46 +1,60 @@
-"use client"; // Obligatorio para usar useState y efectos en Next.js App Router
+"use client";
 
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
+import { Search, Menu, X, ShoppingCart } from "lucide-react";
+import Link from "next/link";
+import { useCart } from "@/app/context/CartContext";
 
 export default function Header() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<string[]>([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  // Función que llama a tu API
+  const { openCart, cartItems } = useCart();
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handleSearch = async (value: string) => {
     setQuery(value);
-
-    if (value.trim() === "") {
-      setResults([]);
-      return;
-    }
+    if (value.trim() === "") return setResults([]);
 
     try {
       const res = await fetch(`/api/productos?q=${encodeURIComponent(value)}`);
       if (!res.ok) throw new Error("Error al buscar");
       const data = await res.json();
-      setResults(data.map((p: any) => p.nombre)); // Solo el nombre
+      setResults(data.map((p: any) => p.nombre));
     } catch (error) {
       console.error("Error en búsqueda:", error);
     }
   };
 
   return (
-    <header className="bg-yellow-600 text-white p-4 shadow">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+    <header
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled ? "bg-yellow-600 shadow-md" : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
         {/* Logo */}
-        <h1 className="text-lg font-bold">Redmaq Colombia</h1>
+        <div className="flex items-center gap-2">
+          <img src="/images/logo.jpg" alt="Redmaq Logo" className="w-10 h-10 object-contain" />
+          <h1 className="text-xl font-bold tracking-wide text-white">Redmaq Colombia</h1>
+        </div>
 
-        {/* Barra de navegación */}
-        <nav className="flex items-center space-x-4">
-          <a href="/" className="hover:underline">Inicio</a>
-          <a href="/productos" className="hover:underline">Productos</a>
-          <a href="/contacto" className="hover:underline">Contacto</a>
+        {/* Navegación desktop */}
+        <nav className="hidden md:flex gap-6 font-medium">
+          <Link href="/" className="text-white hover:text-yellow-300 transition">Inicio</Link>
+          <Link href="/productos" className="text-white hover:text-yellow-300 transition">Productos</Link>
+          <Link href="/contacto" className="text-white hover:text-yellow-300 transition">Contacto</Link>
         </nav>
 
         {/* Buscador */}
-        <div className="relative w-full sm:w-72">
+        <div className="hidden md:block relative w-64">
           <input
             type="text"
             value={query}
@@ -48,12 +62,7 @@ export default function Header() {
             placeholder="Buscar productos..."
             className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 text-black placeholder-gray-500 focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-400"
           />
-          <Search
-            size={18}
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-          />
-
-          {/* Resultados de búsqueda */}
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
           {results.length > 0 && (
             <ul className="absolute left-0 w-full mt-1 bg-white text-black rounded-lg shadow-lg overflow-hidden z-50">
               {results.map((item, idx) => (
@@ -71,7 +80,31 @@ export default function Header() {
             </ul>
           )}
         </div>
+
+        {/* Carrito y menú móvil */}
+        <div className="flex items-center gap-4">
+          <button onClick={openCart} className="relative">
+            <ShoppingCart size={24} className="text-white" />
+            {cartItems.length > 0 && (
+              <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                {cartItems.length}
+              </span>
+            )}
+          </button>
+
+          <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+        </div>
       </div>
+
+      {isMenuOpen && (
+        <div className="md:hidden bg-yellow-600 text-white px-6 py-4 space-y-4">
+          <Link href="/" className="block hover:text-yellow-300 transition">Inicio</Link>
+          <Link href="/productos" className="block hover:text-yellow-300 transition">Productos</Link>
+          <Link href="/contacto" className="block hover:text-yellow-300 transition">Contacto</Link>
+        </div>
+      )}
     </header>
   );
 }
