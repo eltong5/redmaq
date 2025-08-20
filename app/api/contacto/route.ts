@@ -1,10 +1,15 @@
 // app/api/contacto/route.ts
 import { NextResponse } from "next/server";
 
-// Simula la API de contacto sin enviar correos
+export const runtime = "nodejs"; // necesario para APIs en Vercel
+
+function sanitize(input: string) {
+  return input.replace(/<[^>]*>?/gm, "").trim();
+}
+
 export async function POST(req: Request) {
   try {
-    const { nombre, empresa, email, telefono, mensaje, token } = await req.json();
+    const { nombre, empresa, email, telefono, mensaje } = await req.json();
 
     // Validaciones básicas
     if (!nombre?.trim() || !email?.trim() || !mensaje?.trim()) {
@@ -16,8 +21,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Email inválido" }, { status: 400 });
     }
 
-    // Aquí podrías hacer logging o guardar en DB si quieres
-    console.log("Contacto recibido:", { nombre, empresa, email, telefono, mensaje });
+    // Sanitizar inputs
+    const cleanNombre = sanitize(nombre);
+    const cleanEmpresa = sanitize(empresa || "");
+    const cleanEmail = sanitize(email);
+    const cleanTelefono = sanitize(telefono || "");
+    const cleanMensaje = sanitize(mensaje);
+
+    // Simulación de envío (sin nodemailer)
+    await new Promise((res) => setTimeout(res, 1000));
+
+    console.log("Mensaje simulado enviado:", { cleanNombre, cleanEmpresa, cleanEmail, cleanTelefono, cleanMensaje });
 
     return NextResponse.json({ success: true });
   } catch (err) {
