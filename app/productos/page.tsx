@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import ProductCard from "@/components/ProductCard";
@@ -19,7 +19,7 @@ type Filtros = {
   precio: [number, number];
 };
 
-function ProductosPageContent() {
+export default function ProductosPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -50,7 +50,7 @@ function ProductosPageContent() {
     [router]
   );
 
-  // Traer productos desde API
+  // Traer productos desde API según filtros
   const fetchProductos = async (f: Filtros) => {
     setLoading(true);
     const params = new URLSearchParams();
@@ -95,13 +95,5 @@ function ProductosPageContent() {
         )}
       </section>
     </div>
-  );
-}
-
-export default function ProductosPage() {
-  return (
-    <Suspense fallback={<p>Cargando página...</p>}>
-      <ProductosPageContent />
-    </Suspense>
   );
 }
