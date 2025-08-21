@@ -1,6 +1,5 @@
 // app/productos/[id]/page.tsx
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import SuggestedProducts from "@/components/SuggestedProducts";
 import AddToCartButton from "@/components/AddToCartButtonClient";
 
@@ -47,14 +46,18 @@ export default async function ProductoPage({
           </p>
           <p className="mb-4">{producto.descripcion}</p>
 
-          <h3 className="font-semibold mb-2">Especificaciones:</h3>
-          <ul className="list-disc pl-5 space-y-1 text-gray-700 mb-6">
-            {producto.especificaciones.map((esp, idx) => (
-              <li key={idx}>{esp}</li>
-            ))}
-          </ul>
+          {producto.especificaciones?.length > 0 && (
+            <>
+              <h3 className="font-semibold mb-2">Especificaciones:</h3>
+              <ul className="list-disc pl-5 space-y-1 text-gray-700 mb-6">
+                {producto.especificaciones.map((esp, idx) => (
+                  <li key={idx}>{esp}</li>
+                ))}
+              </ul>
+            </>
+          )}
 
-          {/* Botón Agregar al carrito como componente client */}
+          {/* Botón Agregar al carrito (Client Component) */}
           <AddToCartButton producto={producto} />
         </div>
       </div>

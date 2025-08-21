@@ -57,6 +57,7 @@ export default function ProductosPage() {
     if (f.categoria) params.append("categoria", f.categoria);
     if (f.precio[0]) params.append("min", f.precio[0].toString());
     if (f.precio[1]) params.append("max", f.precio[1].toString());
+    if (f.marca) params.append("marca", f.marca);
 
     const res = await fetch(`/api/productos?${params.toString()}`);
     const data = await res.json();
