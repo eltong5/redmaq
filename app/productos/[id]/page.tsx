@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import SuggestedProducts from "@/components/SuggestedProducts";
 import AddToCartButton from "@/components/AddToCartButtonClient";
+import Image from "next/image";
 
 interface Producto {
   id: number;
@@ -17,7 +18,6 @@ export default async function ProductoPage({
 }: {
   params: { id: string };
 }) {
-  // ✅ Usar fetch relativo (no localhost)
   const res = await fetch(`/api/productos?id=${params.id}`, {
     cache: "no-store",
   });
@@ -31,10 +31,12 @@ export default async function ProductoPage({
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <img
+        <Image
           src={producto.imagen}
           alt={producto.nombre}
-          className="w-full h-96 object-cover rounded-lg shadow"
+          width={600}
+          height={400}
+          className="object-cover rounded-lg shadow"
         />
 
         <div className="flex flex-col">
@@ -52,12 +54,10 @@ export default async function ProductoPage({
             ))}
           </ul>
 
-          {/* Botón Agregar al carrito */}
           <AddToCartButton producto={producto} />
         </div>
       </div>
 
-      {/* Productos relacionados */}
       {sugeridos.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold mb-6">Productos relacionados</h2>

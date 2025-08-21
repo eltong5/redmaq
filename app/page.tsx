@@ -1,4 +1,3 @@
-// app/page.tsx
 import Hero from "@/components/Hero";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,17 +11,15 @@ interface Producto {
 }
 
 async function getProductos(): Promise<Producto[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/productos`, {
-    cache: "no-store", // siempre datos frescos
-  });
-
-  if (!res.ok) {
-    console.error("Error al cargar productos");
+  try {
+    const res = await fetch(`/api/productos`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Error al cargar productos");
+    const data = await res.json();
+    return data.productos || [];
+  } catch (error) {
+    console.error(error);
     return [];
   }
-
-  const data = await res.json();
-  return data.productos || [];
 }
 
 export default async function Home() {
@@ -30,10 +27,8 @@ export default async function Home() {
 
   return (
     <>
-      {/* Hero solo en Home */}
       <Hero />
 
-      {/* Catálogo destacado */}
       <section className="p-6">
         <h1 className="text-2xl font-bold mb-6">Catálogo de Productos</h1>
 
@@ -56,16 +51,12 @@ export default async function Home() {
                       alt={producto.nombre}
                       fill
                       className="object-contain p-2"
-                      sizes="(max-width: 768px) 100vw, 
-                             (max-width: 1200px) 50vw, 
-                             25vw"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     />
                   </div>
                   <div className="p-4">
                     <h2 className="font-bold text-lg mb-1">{producto.nombre}</h2>
-                    <p className="text-sm text-gray-500 mb-2">
-                      {producto.categoria}
-                    </p>
+                    <p className="text-sm text-gray-500 mb-2">{producto.categoria}</p>
                     <p className="font-semibold text-yellow-700">
                       ${producto.precio.toLocaleString("es-CO")}
                     </p>
@@ -79,4 +70,3 @@ export default async function Home() {
     </>
   );
 }
-

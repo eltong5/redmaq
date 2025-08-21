@@ -23,7 +23,6 @@ export default function ProductosPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Inicializar filtros desde query params
   const [filtros, setFiltros] = useState<Filtros>({
     categoria: searchParams.get("categoria") || "",
     marca: searchParams.get("marca") || "",
@@ -36,7 +35,6 @@ export default function ProductosPage() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Actualizar URL al cambiar filtros
   const updateURL = useCallback(
     (f: Filtros) => {
       const params = new URLSearchParams();
@@ -50,22 +48,26 @@ export default function ProductosPage() {
     [router]
   );
 
-  // Traer productos desde API según filtros
   const fetchProductos = async (f: Filtros) => {
     setLoading(true);
-    const params = new URLSearchParams();
-    if (f.categoria) params.append("categoria", f.categoria);
-    if (f.precio[0]) params.append("min", f.precio[0].toString());
-    if (f.precio[1]) params.append("max", f.precio[1].toString());
-    if (f.marca) params.append("marca", f.marca);
+    try {
+      const params = new URLSearchParams();
+      if (f.categoria) params.append("categoria", f.categoria);
+      if (f.precio[0]) params.append("min", f.precio[0].toString());
+      if (f.precio[1]) params.append("max", f.precio[1].toString());
+      if (f.marca) params.append("marca", f.marca);
 
-    const res = await fetch(`/api/productos?${params.toString()}`);
-    const data = await res.json();
-    setProductos(data.productos || []);
-    setLoading(false);
+      const res = await fetch(`/api/productos?${params.toString()}`);
+      const data = await res.json();
+      setProductos(data.productos || []);
+    } catch (error) {
+      console.error(error);
+      setProductos([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Ejecutar cuando filtros cambian
   useEffect(() => {
     fetchProductos(filtros);
     updateURL(filtros);
@@ -73,10 +75,8 @@ export default function ProductosPage() {
 
   return (
     <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-4 gap-6">
-      {/* Sidebar */}
       <Sidebar onFilterChange={setFiltros} filtros={filtros} />
 
-      {/* Listado productos */}
       <section className="md:col-span-3">
         <h1 className="text-2xl font-bold mb-6 mt-6 md:mt-10">
           Catálogo de Productos
