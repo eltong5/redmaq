@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import ProductCard from "@/components/ProductCard";
@@ -19,7 +19,7 @@ type Filtros = {
   precio: [number, number];
 };
 
-export default function ProductosPage() {
+function ProductosPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -36,7 +36,7 @@ export default function ProductosPage() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Actualizar URL al cambiar filtros (memoizado con useCallback)
+  // Actualizar URL al cambiar filtros
   const updateURL = useCallback(
     (f: Filtros) => {
       const params = new URLSearchParams();
@@ -50,7 +50,7 @@ export default function ProductosPage() {
     [router]
   );
 
-  // Traer productos desde API según filtros
+  // Traer productos desde API
   const fetchProductos = async (f: Filtros) => {
     setLoading(true);
     const params = new URLSearchParams();
@@ -95,5 +95,13 @@ export default function ProductosPage() {
         )}
       </section>
     </div>
+  );
+}
+
+export default function ProductosPage() {
+  return (
+    <Suspense fallback={<p>Cargando página...</p>}>
+      <ProductosPageContent />
+    </Suspense>
   );
 }
