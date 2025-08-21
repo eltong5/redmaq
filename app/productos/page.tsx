@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import ProductCard from "@/components/ProductCard";
@@ -36,16 +36,19 @@ export default function ProductosPage() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Actualizar URL al cambiar filtros
-  const updateURL = (f: Filtros) => {
-    const params = new URLSearchParams();
-    if (f.categoria) params.append("categoria", f.categoria);
-    if (f.precio[0]) params.append("min", f.precio[0].toString());
-    if (f.precio[1]) params.append("max", f.precio[1].toString());
-    if (f.marca) params.append("marca", f.marca);
+  // Actualizar URL al cambiar filtros (memoizado con useCallback)
+  const updateURL = useCallback(
+    (f: Filtros) => {
+      const params = new URLSearchParams();
+      if (f.categoria) params.append("categoria", f.categoria);
+      if (f.precio[0]) params.append("min", f.precio[0].toString());
+      if (f.precio[1]) params.append("max", f.precio[1].toString());
+      if (f.marca) params.append("marca", f.marca);
 
-    router.replace(`/productos?${params.toString()}`);
-  };
+      router.replace(`/productos?${params.toString()}`);
+    },
+    [router]
+  );
 
   // Traer productos desde API según filtros
   const fetchProductos = async (f: Filtros) => {
@@ -65,7 +68,7 @@ export default function ProductosPage() {
   useEffect(() => {
     fetchProductos(filtros);
     updateURL(filtros);
-  }, [filtros]);
+  }, [filtros, updateURL]);
 
   return (
     <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -74,7 +77,9 @@ export default function ProductosPage() {
 
       {/* Listado productos */}
       <section className="md:col-span-3">
-        <h1 className="text-2xl font-bold mb-6">Catálogo de Productos</h1>
+        <h1 className="text-2xl font-bold mb-6 mt-6 md:mt-10">
+          Catálogo de Productos
+        </h1>
 
         {loading ? (
           <p>Cargando productos...</p>
@@ -91,4 +96,3 @@ export default function ProductosPage() {
     </div>
   );
 }
-

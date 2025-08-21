@@ -1,76 +1,26 @@
 @tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* ===== Reset básico ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* ===== Body Global ===== */
-body {
-  @apply bg-gray-50 text-gray-900 font-sans leading-relaxed antialiased;
-}
-
-/* ===== Tipografía ===== */
-h1, h2, h3, h4, h5, h6 {
-  @apply font-bold text-gray-800 tracking-tight;
-}
-
-p {
-  @apply text-gray-700 leading-relaxed;
-}
-
-/* ===== Enlaces ===== */
-a {
-  @apply text-yellow-600 hover:text-yellow-700 transition-colors duration-200;
-  text-decoration: none;
-}
-
-/* ===== Botones reutilizables ===== */
-.btn-primary {
-  @apply bg-yellow-600 text-white font-medium px-6 py-3 rounded-lg shadow hover:bg-yellow-700 hover:shadow-md transition;
-}
-
-.btn-secondary {
-  @apply bg-gray-700 text-white font-medium px-6 py-3 rounded-lg shadow hover:bg-gray-800 hover:shadow-md transition;
-}
-
-.btn-outline {
-  @apply border border-yellow-600 text-yellow-600 font-medium px-6 py-3 rounded-lg hover:bg-yellow-600 hover:text-white transition;
-}
-
-/* ===== Contenedor ===== */
-.container {
-  @apply max-w-7xl mx-auto px-4;
-}
-
-/* ===== Animaciones personalizadas ===== */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeInUp {
-  animation: fadeInUp 0.8s ease-out forwards;
-}
-
-.animate-fadeInUp.delay-150 {
-  animation-delay: 0.15s;
-}
-
-.animate-fadeInUp.delay-300 {
-  animation-delay: 0.3s;
-}
-
-.animate-fadeInUp.delay-500 {
-  animation-delay: 0.5s;
-}
+ @tailwind components;
+  @tailwind utilities;
+   /* ===== Reset básico ===== */ 
+   * { margin: 0; padding: 0; box-sizing: border-box; } 
+   /* ===== Body Global ===== */ 
+   body { @apply bg-gray-50 text-gray-900 font-sans leading-relaxed antialiased; }
+    /* ===== Tipografía ===== */ 
+    h1, h2, h3, h4, h5, h6 { @apply font-bold text-gray-800 tracking-tight; } 
+    p { @apply text-gray-700 leading-relaxed; } /* ===== Enlaces ===== */ 
+    a { @apply text-yellow-600 hover:text-yellow-700 transition-colors duration-200; text-decoration: none; }
+     /* ===== Botones reutilizables ===== */ 
+     .btn-primary { @apply bg-yellow-600 text-white font-medium px-6 py-3 rounded-lg shadow hover:bg-yellow-700 hover:shadow-md transition; } 
+     .btn-secondary { @apply bg-gray-700 text-white font-medium px-6 py-3 rounded-lg shadow hover:bg-gray-800 hover:shadow-md transition; }
+      .btn-outline { @apply border border-yellow-600 text-yellow-600 font-medium px-6 py-3 rounded-lg hover:bg-yellow-600 hover:text-white transition; }
+       /* ===== Contenedor ===== */ 
+       .container { @apply max-w-7xl mx-auto px-4; } 
+       /* ===== Animaciones personalizadas ===== */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } 
+        to { opacity: 1; transform: translateY(0); } } 
+        .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+         .animate-fadeInUp.delay-150 { animation-delay: 0.15s; } 
+         .animate-fadeInUp.delay-300 { animation-delay: 0.3s; } 
+         .animate-fadeInUp.delay-500 { animation-delay: 0.5s; } 
+         :root { --page-bg: #f9fafb; /* gris claro moderno */ } 
+         body { background-color: var(--page-bg); }

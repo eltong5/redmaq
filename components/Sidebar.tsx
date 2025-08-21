@@ -1,7 +1,7 @@
 // app/components/Sidebar.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const categorias = [
   "Herramientas Eléctricas",
@@ -20,18 +20,21 @@ type Filtros = {
 
 export default function Sidebar({
   onFilterChange,
+  filtros,
 }: {
   onFilterChange: (filtros: Filtros) => void;
+  filtros: Filtros;
 }) {
-  const [filtros, setFiltros] = useState<Filtros>({
-    categoria: "",
-    marca: "",
-    precio: [0, 5000000],
-  });
+  const [localFiltros, setLocalFiltros] = useState<Filtros>(filtros);
+
+  // Mantener sincronizado el estado interno con los props
+  useEffect(() => {
+    setLocalFiltros(filtros);
+  }, [filtros]);
 
   const updateFiltros = (newFiltros: Partial<Filtros>) => {
-    const updated = { ...filtros, ...newFiltros };
-    setFiltros(updated);
+    const updated = { ...localFiltros, ...newFiltros };
+    setLocalFiltros(updated);
     onFilterChange(updated);
   };
 
@@ -47,10 +50,12 @@ export default function Sidebar({
             <li key={c}>
               <button
                 onClick={() =>
-                  updateFiltros({ categoria: filtros.categoria === c ? "" : c })
+                  updateFiltros({
+                    categoria: localFiltros.categoria === c ? "" : c,
+                  })
                 }
                 className={`w-full text-left px-2 py-1 rounded ${
-                  filtros.categoria === c
+                  localFiltros.categoria === c
                     ? "bg-yellow-600 text-white"
                     : "hover:bg-gray-100"
                 }`}
@@ -70,10 +75,12 @@ export default function Sidebar({
             <li key={m}>
               <button
                 onClick={() =>
-                  updateFiltros({ marca: filtros.marca === m ? "" : m })
+                  updateFiltros({
+                    marca: localFiltros.marca === m ? "" : m,
+                  })
                 }
                 className={`w-full text-left px-2 py-1 rounded ${
-                  filtros.marca === m
+                  localFiltros.marca === m
                     ? "bg-yellow-600 text-white"
                     : "hover:bg-gray-100"
                 }`}
@@ -92,18 +99,22 @@ export default function Sidebar({
           <input
             type="number"
             placeholder="Mín"
-            value={filtros.precio[0]}
+            value={localFiltros.precio[0]}
             onChange={(e) =>
-              updateFiltros({ precio: [Number(e.target.value), filtros.precio[1]] })
+              updateFiltros({
+                precio: [Number(e.target.value), localFiltros.precio[1]],
+              })
             }
             className="w-1/2 border rounded px-2 py-1 text-sm"
           />
           <input
             type="number"
             placeholder="Máx"
-            value={filtros.precio[1]}
+            value={localFiltros.precio[1]}
             onChange={(e) =>
-              updateFiltros({ precio: [filtros.precio[0], Number(e.target.value)] })
+              updateFiltros({
+                precio: [localFiltros.precio[0], Number(e.target.value)],
+              })
             }
             className="w-1/2 border rounded px-2 py-1 text-sm"
           />
